@@ -1,1 +1,8 @@
 /build/
+/dist/
+/nbproject/
+build.xml
+jacob.jar
+jacob-1.16-M1-x64.dll
+jacob-1.16-M1-x86.dll
+manifest.mf
