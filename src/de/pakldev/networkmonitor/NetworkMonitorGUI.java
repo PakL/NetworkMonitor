@@ -1,11 +1,6 @@
 package de.pakldev.networkmonitor;
 
-import java.awt.Container;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -15,8 +10,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -32,6 +32,7 @@ public class NetworkMonitorGUI extends JFrame {
     
     private final NetworkMonitorGUI main = this;
     private final WinNetworkInterface network;
+    
         
     private JComboBox comboBox = new JComboBox();
     private JLabel lbl_outgoing = new JLabel( "<html><b>Upload:</b></html>" );
@@ -45,13 +46,44 @@ public class NetworkMonitorGUI extends JFrame {
     private Refresher refresher = null;
     
     public NetworkMonitorGUI( final WinNetworkInterface interfaces ) {
+        BufferedImage i_close = null;
+        BufferedImage i_close_over = null;
+        BufferedImage i_close_click = null;
+        BufferedImage i_min = null;
+        BufferedImage i_min_over = null;
+        BufferedImage i_min_click = null;
+        BufferedImage i_about = null;
+        BufferedImage i_about_over = null;
+        BufferedImage i_about_click = null;
+        
+        BufferedImage icon_64 = null;
+        BufferedImage icon_32 = null;
+        BufferedImage icon_16 = null;
+        try {
+            BufferedImage winicon = ImageIO.read( NetworkMonitorGUI.class.getResourceAsStream( "res/window.icon.png" ) );
+            BufferedImage appicon = ImageIO.read( NetworkMonitorGUI.class.getResourceAsStream( "res/app.icon.png" ) );
+            
+            i_close       = winicon.getSubimage(  0, 0, 23, 16 );
+            i_close_over  = winicon.getSubimage( 23, 0, 23, 16 );
+            i_close_click = winicon.getSubimage( 46, 0, 23, 16 );
+            i_min         = winicon.getSubimage(  0, 16, 23, 16 );
+            i_min_over    = winicon.getSubimage( 23, 16, 23, 16 );
+            i_min_click   = winicon.getSubimage( 46, 16, 23, 16 );
+            i_about       = winicon.getSubimage(  0, 32, 23, 16 );
+            i_about_over  = winicon.getSubimage( 23, 32, 23, 16 );
+            i_about_click = winicon.getSubimage( 46, 32, 23, 16 );
+            
+            icon_64 = appicon.getSubimage( 0, 0, 64, 64 );
+            icon_32 = appicon.getSubimage( 64, 0, 32, 32 );
+            icon_16 = appicon.getSubimage( 80, 48, 16, 16 );
+        } catch (IOException ex) {
+        }
+        
         this.setUndecorated( true );
         
         this.network = interfaces;
         this.setTitle( "NetworkMonitor" );
-        Image icon_16 = new ImageIcon( NetworkMonitorGUI.class.getResource( "res/icon.png" ) ).getImage();
-        Image icon_32 = new ImageIcon( NetworkMonitorGUI.class.getResource( "res/icon_32.png" ) ).getImage();
-        Image icon_64 = new ImageIcon( NetworkMonitorGUI.class.getResource( "res/icon_64.png" ) ).getImage();
+        
         List<Image> iconimages = new ArrayList();
         iconimages.add(icon_64);
         iconimages.add(icon_32);
@@ -77,9 +109,9 @@ public class NetworkMonitorGUI extends JFrame {
         closeButton.setBorder(null);
         closeButton.setBorderPainted(false);
         closeButton.setMargin(new Insets(0,0,0,0));
-        closeButton.setIcon( new ImageIcon( NetworkMonitorGUI.class.getResource( "res/close.png" ) ) );
-        closeButton.setRolloverIcon( new ImageIcon( NetworkMonitorGUI.class.getResource( "res/close_over.png" ) ) );
-        closeButton.setPressedIcon( new ImageIcon( NetworkMonitorGUI.class.getResource( "res/close_click.png" ) ) );
+        closeButton.setIcon( new ImageIcon( i_close ) );
+        closeButton.setRolloverIcon( new ImageIcon( i_close_over ) );
+        closeButton.setPressedIcon( new ImageIcon( i_close_click ) );
         layout.putConstraint( SpringLayout.NORTH, closeButton, 0,   SpringLayout.NORTH, contentPane );
         layout.putConstraint( SpringLayout.EAST,  closeButton, -5,  SpringLayout.EAST,  contentPane );
         layout.putConstraint( SpringLayout.WEST,  closeButton, -23, SpringLayout.EAST,  closeButton  );
@@ -96,9 +128,9 @@ public class NetworkMonitorGUI extends JFrame {
         minButton.setBorder(null);
         minButton.setBorderPainted(false);
         minButton.setMargin(new Insets(0,0,0,0));
-        minButton.setIcon( new ImageIcon( NetworkMonitorGUI.class.getResource( "res/min.png" ) ) );
-        minButton.setRolloverIcon( new ImageIcon( NetworkMonitorGUI.class.getResource( "res/min_over.png" ) ) );
-        minButton.setPressedIcon( new ImageIcon( NetworkMonitorGUI.class.getResource( "res/min_click.png" ) ) );
+        minButton.setIcon( new ImageIcon( i_min ) );
+        minButton.setRolloverIcon( new ImageIcon( i_min_over ) );
+        minButton.setPressedIcon( new ImageIcon( i_min_click ) );
         layout.putConstraint( SpringLayout.NORTH, minButton, 0,   SpringLayout.NORTH, contentPane );
         layout.putConstraint( SpringLayout.EAST,  minButton, -5,  SpringLayout.WEST,  closeButton );
         layout.putConstraint( SpringLayout.WEST,  minButton, -23, SpringLayout.EAST,  minButton  );
@@ -116,9 +148,9 @@ public class NetworkMonitorGUI extends JFrame {
         aboutButton.setBorder(null);
         aboutButton.setBorderPainted(false);
         aboutButton.setMargin(new Insets(0,0,0,0));
-        aboutButton.setIcon( new ImageIcon( NetworkMonitorGUI.class.getResource( "res/about.png" ) ) );
-        aboutButton.setRolloverIcon( new ImageIcon( NetworkMonitorGUI.class.getResource( "res/about_over.png" ) ) );
-        aboutButton.setPressedIcon( new ImageIcon( NetworkMonitorGUI.class.getResource( "res/about_click.png" ) ) );
+        aboutButton.setIcon( new ImageIcon( i_about ) );
+        aboutButton.setRolloverIcon( new ImageIcon( i_about_over ) );
+        aboutButton.setPressedIcon( new ImageIcon( i_about_click ) );
         layout.putConstraint( SpringLayout.NORTH, aboutButton, 0,   SpringLayout.NORTH, contentPane );
         layout.putConstraint( SpringLayout.EAST,  aboutButton, -5,  SpringLayout.WEST,  minButton );
         layout.putConstraint( SpringLayout.WEST,  aboutButton, -23, SpringLayout.EAST,  aboutButton  );
