@@ -1,8 +1,5 @@
-++++++++++++++++++++++++++++++++++++++++++++++
-+                                            +
-+              NetworkMonitor                +
-+                                            +
-++++++++++++++++++++++++++++++++++++++++++++++
+NetworkMonitor
+==============
 
 NetworkMonitor is a open source project by
 Pascal <PakL> Pohl.
